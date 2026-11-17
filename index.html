@@ -102,7 +102,7 @@ function loadLevel(i){
  lvl={idx:i,name:d.name,pal:d.pal,grid:d.grid.map(r=>r.slice()),keys:d.keys.map(k=>({c:k[0],r:k[1],got:false})),
   enemies:d.enemies.map(mkEnemy),portal:{c:d.portal[0],r:d.portal[1]},crumble:{},airSecs:d.air,bg:buildBG(d.pal,i*977+13)};
  p={x:d.start.c*T+(T-PW)/2,y:d.start.floor*T-PH,vx:0,vy:0,on:true,face:1,coyote:0,jbuf:0,takeoff:d.start.floor*T,wp:0,jumped:false};
- air=100;fade=1;parts.length=0;
+ air=100;fade=1;parts.length=0;mStep=0;mBar=0;
  motes.length=0;for(let k=0;k<40;k++)motes.push({x:Math.random()*CW,y:Math.random()*CAVE_H,s:Math.random()*.4+.1,a:Math.random()*6});
 }
 function startGame(){score=0;lives=3;li=0;nextLife=5000;loadLevel(0);state='play';initAudio();}
@@ -115,12 +115,67 @@ function initAudio(){
  if(AC)return;
  try{AC=new(window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
   musicG=AC.createGain();musicG.gain.value=musicOn?1:0;musicG.connect(master);nextNote=AC.currentTime+.1;
-  setInterval(()=>{ if(!AC)return;
-   while(nextNote<AC.currentTime+.3){const[n,l]=MEL[mi];const len=l*.16;
-    if(n!==null){const f=440*Math.pow(2,n/12);tone(f,len*.9,'square',.05,0,nextNote-AC.currentTime,musicG);tone(f/4,len*.9,'triangle',.09,0,nextNote-AC.currentTime,musicG);}
-    nextNote+=len;mi=(mi+1)%MEL.length;}
-  },50);
+  setInterval(musicTick,50);
  }catch(e){AC=null}
+}
+
+/* ---------- dynamic music ---------- */
+const SC={min:[0,2,3,5,7,8,10],dor:[0,2,3,5,7,9,10],phr:[0,1,3,5,7,8,10],harm:[0,2,3,5,7,8,11],lyd:[0,2,4,6,7,9,11]};
+const THEMES=[
+ {root:-12,sc:'min',bpm:124,lead:'square',prog:[[0,5,3,6],[0,3,5,4]]},
+ {root:-10,sc:'dor',bpm:136,lead:'sawtooth',prog:[[0,3,6,4],[0,5,3,4]]},
+ {root:-14,sc:'phr',bpm:112,lead:'square',prog:[[0,1,0,6],[0,3,1,6]]},
+ {root:-9,sc:'lyd',bpm:128,lead:'triangle',prog:[[0,4,5,3],[0,1,4,3]]},
+ {root:-8,sc:'harm',bpm:146,lead:'sawtooth',prog:[[0,5,6,4],[0,3,4,5]]}
+];
+let mStep=0,mBar=0,mTitle=0,noiseBuf=null,curBar=null;
+function degNote(sc,d){return sc[((d%7)+7)%7]+12*Math.floor(d/7)}
+function hz(n){return 440*Math.pow(2,n/12)}
+function drum(type,time){
+ if(!AC)return;const dl=time-AC.currentTime;
+ if(type==='kick'){tone(150,.14,'sine',.5,-110,dl,musicG);return;}
+ if(!noiseBuf){noiseBuf=AC.createBuffer(1,AC.sampleRate,AC.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}
+ const src=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();
+ src.buffer=noiseBuf;f.type='highpass';f.frequency.value=type==='hat'?7000:1800;
+ const len=type==='hat'?.04:.13,vol=type==='hat'?.05:.16;
+ g.gain.setValueAtTime(vol,time);g.gain.exponentialRampToValueAtTime(.001,time+len);
+ src.connect(f);f.connect(g);g.connect(musicG);src.start(time);src.stop(time+len+.02);
+}
+function makeBar(th,bar){
+ const sc=SC[th.sc],phrase=Math.floor(bar/4),pb=bar%4,prog=th.prog[phrase%2];
+ const deg=prog[pb],seed=(li+1)*1000+(phrase%3)*50+(pb%2===1?7:0)+(pb===3?3:0);
+ const r=mulberry32(seed),lead=Array(16).fill(null);let d=deg+2+7;
+ const rhythm=[0,3,6,8,10,12,14];
+ for(const st of rhythm){if(r()<.72){d+=Math.floor(r()*5)-2;d=Math.max(deg+4,Math.min(deg+11,d));lead[st]=degNote(sc,d);}}
+ if(pb===3)lead[12]=degNote(sc,deg+7);
+ return{deg,lead,sc,pb,phrase,drop:phrase%4===3&&pb<2};
+}
+function gameStep(time){
+ const th=THEMES[Math.min(li,THEMES.length-1)],step=mStep%16;
+ if(step===0){curBar=makeBar(th,mBar);}
+ const keys=lvl?lvl.keys:[],frac=keys.length?keys.filter(k=>k.got).length/keys.length:0;
+ const lowAir=state==='play'&&air<25;
+ const inten=(frac>.6||lowAir?2:frac>.25?1:0);
+ const B=curBar,dl=time-AC.currentTime,root=th.root;
+ const bassSteps=B.pb===3?[0,3,6,8,10,12,14]:[0,3,6,8,11,14];
+ if(bassSteps.includes(step)){const n=root-24+degNote(B.sc,B.deg+(step>=8&&B.pb%2?4:0));tone(hz(n),.16,'triangle',.16,0,dl,musicG);}
+ if(step%2===0||inten>=1){const ci=[0,2,4,7,4,2][(step>>(inten?0:1))%6];tone(hz(root+degNote(B.sc,B.deg+ci)),.09,'square',.035,0,dl,musicG);}
+ if(step%4===2||(inten>=1&&step%2===0))drum('hat',time);
+ if(inten>=1){if(step===0||step===8||(step===10&&B.pb===1))drum('kick',time);if(step===4||step===12)drum('snare',time);
+  if(B.pb===3&&step>=13)drum('snare',time);}
+ if(inten>=2&&!B.drop){const ln=B.lead[step];if(ln!==null)tone(hz(root+ln),.2,th.lead,.07,0,dl,musicG);}
+ if(inten<2&&B.pb===3&&step===0&&B.lead[12]!==null)tone(hz(root+B.lead[12]),.4,th.lead,.04,0,dl,musicG);
+ mStep++;if(mStep%16===0)mBar++;
+ const th2=lowAir?.82:1;return 60/th.bpm/4*th2;
+}
+function musicTick(){
+ if(!AC)return;
+ while(nextNote<AC.currentTime+.3){
+  if(state==='title'){const[n,l]=MEL[mTitle];const len=l*.16;
+   if(n!==null){const f=440*Math.pow(2,n/12);tone(f,len*.9,'square',.05,0,nextNote-AC.currentTime,musicG);tone(f/4,len*.9,'triangle',.09,0,nextNote-AC.currentTime,musicG);}
+   nextNote+=len;mTitle=(mTitle+1)%MEL.length;mStep=0;mBar=0;}
+  else nextNote+=gameStep(nextNote);
+ }
 }
 function tone(f,d,type='square',vol=.15,slide=0,delay=0,dest){
  if(!AC)return;const s=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
