@@ -27,6 +27,9 @@ const PAL={
  arcade:{bg:['#06222b','#0c3b44'],brick:'#1f6f78',brickHi:'#4fd0d6',brickLo:'#0c3a40',plat:'#36c2c9',accent:'#7dfcff',glow:'#2de2e6'},
  foundry:{bg:['#1b1414','#2c1c1c'],brick:'#6b6f7a',brickHi:'#a9afc0',brickLo:'#33363f',plat:'#8890a3',accent:'#ff9a55',glow:'#ff5a2a'},
  green:{bg:['#08200f','#12361a'],brick:'#3d7a34',brickHi:'#8bd95b',brickLo:'#1c3d17',plat:'#5fb04a',accent:'#c8ff6a',glow:'#7dff5a'},
+ ice:{bg:['#06142b','#0b2a52'],brick:'#2f6fb0',brickHi:'#a9e4ff',brickLo:'#123556',plat:'#6bb8ff',accent:'#bff3ff',glow:'#6be1ff'},
+ lava:{bg:['#2a0806','#4a1208'],brick:'#7a2a1a',brickHi:'#ff7a3c',brickLo:'#3a120b',plat:'#c9482a',accent:'#ff9a3c',glow:'#ff4a1a'},
+ void:{bg:['#050008','#1a0014'],brick:'#4a1a4a',brickHi:'#ff4fd8',brickLo:'#1c071c',plat:'#b02fa0',accent:'#ff4fd8',glow:'#ff2fd0'},
  crystal:{bg:['#10062b','#240a4a'],brick:'#5a3bb0',brickHi:'#b28cff',brickLo:'#281563',plat:'#8f6bff',accent:'#ff9be9',glow:'#c27bff'}
 };
 
@@ -40,25 +43,53 @@ const LEVEL_DEFS=[
  build(g){g.h(14,4,30,'^');g.h(12,4,8);g.h(12,10,13,'c');g.h(12,15,17);g.h(12,19,22,'c');g.h(12,24,30);
   g.h(9,11,16);g.h(6,19,24);g.h(9,25,28);},
  keys:[[6,11],[12,11],[16,11],[13,8],[21,5],[26,8],[21,11]],
- enemies:[{t:'walk',x0:19,x1:24,row:6,sp:1.3,style:'robot'},{t:'walk',x0:24,x1:27,row:12,sp:1.2,style:'critter'}]},
+ enemies:[{t:'walk',x0:19,x1:24,row:6,sp:1.3,style:'robot'}]},
 {name:'Conveyor Foundry',pal:'foundry',air:95,start:{c:1,floor:15},portal:[28,10],
  build(g){g.h(12,4,16,'>');g.h(9,17,28,'<');g.h(6,8,16,'>');g.h(3,18,28);g.h(6,29,30);g.h(12,22,30);},
  keys:[[8,11],[22,8],[11,5],[22,2],[26,2],[24,11]],
- enemies:[{t:'vert',col:14,r0:7,r1:12,sp:2,style:'saw'},{t:'vert',col:23,r0:4,r1:9,sp:1.8,style:'saw',ph:.5},
-  {t:'walk',x0:20,x1:26,row:3,sp:1.4,style:'robot'},{t:'walk',x0:22,x1:27,row:12,sp:1.3,style:'critter'}]},
+ enemies:[{t:'vert',col:14,r0:7,r1:12,sp:2,style:'saw'},{t:'vert',col:23,r0:4,r1:9,sp:1.8,style:'saw',ph:.5},]},
 {name:'Toxic Greenhouse',pal:'green',air:100,start:{c:1,floor:15},portal:[8,7],
  build(g){g.h(14,3,30,'*');g.h(12,4,11);g.h(12,14,18);g.h(9,20,28);g.h(6,12,19);g.h(3,4,10);g.h(6,1,3);g.h(9,4,10);
-  g.set(9,11,'*');g.set(17,11,'*');g.set(26,8,'*');},
+  g.set(17,11,'*');g.set(26,8,'*');},
  keys:[[6,11],[15,11],[24,8],[15,5],[7,2]],
  enemies:[{t:'walk',x0:21,x1:25,row:9,sp:1.4,style:'critter'},{t:'walk',x0:13,x1:18,row:6,sp:1.5,style:'critter'},
-  {t:'vert',col:12,r0:7,r1:12,sp:1.8,style:'bat'},{t:'walk',x0:5,x1:9,row:3,sp:1.3,style:'robot'}]},
+  {t:'vert',col:12,r0:7,r1:12,sp:1.8,style:'bat'}]},
 {name:'Crystal Spires',pal:'crystal',air:110,start:{c:1,floor:15},portal:[8,1],
  build(g){g.h(14,5,30,'^');g.h(12,5,9);g.h(12,12,15);g.h(12,18,21);g.h(9,23,27);g.h(6,15,20);g.h(3,7,13);},
  keys:[[7,11],[13,11],[19,11],[25,8],[17,5],[11,2],[13,2]],
  enemies:[{t:'vert',col:10,r0:8,r1:12,sp:2,style:'saw'},{t:'vert',col:16,r0:8,r1:12,sp:2,style:'saw',ph:.5},
-  {t:'walk',x0:16,x1:20,row:6,sp:1.5,style:'robot'},{t:'walk',x0:10,x1:14,row:3,sp:1.6,style:'critter'},
+  {t:'walk',x0:16,x1:20,row:6,sp:1.5,style:'robot'},
   {t:'vert',col:27,r0:4,r1:8,sp:1.8,style:'bat'}]}
 ];
+
+/* hardcore-only caverns */
+LEVEL_DEFS.push(
+{name:'Ice Cathedral',pal:'ice',air:100,start:{c:1,floor:15},portal:[8,1],
+ build(g){g.h(14,5,30,'^');g.h(12,5,8);g.h(12,11,13);g.h(12,16,18);g.h(12,21,23);g.h(9,25,29);g.h(6,17,22);g.h(3,8,15);},
+ keys:[[6,11],[12,11],[17,11],[22,11],[27,8],[19,5],[10,2],[14,2]],
+ enemies:[{t:'vert',col:9,r0:8,r1:12,sp:2.4,style:'saw'},{t:'vert',col:14,r0:8,r1:12,sp:2.4,style:'saw',ph:.5},{t:'vert',col:19,r0:8,r1:12,sp:2.4,style:'saw',ph:.25},
+  {t:'vert',col:28,r0:4,r1:8,sp:2,style:'bat'},{t:'walk',x0:17,x1:22,row:6,sp:1.8,style:'robot'}]},
+{name:'Rust Belt',pal:'foundry',air:100,start:{c:1,floor:15},portal:[2,1],
+ build(g){g.h(12,4,14,'<');g.h(9,16,28,'>');g.h(6,6,13,'<');g.h(3,1,4);},
+ keys:[[6,11],[20,8],[27,8],[9,5],[12,5],[3,2]],
+ enemies:[{t:'vert',col:11,r0:7,r1:12,sp:2.2,style:'saw'},{t:'vert',col:26,r0:4,r1:9,sp:2.2,style:'saw',ph:.5},
+  {t:'walk',x0:20,x1:26,row:9,sp:1.8,style:'robot'},{t:'walk',x0:8,x1:12,row:6,sp:1.8,style:'critter'}]},
+{name:'Venom Gardens',pal:'green',air:105,start:{c:1,floor:15},portal:[26,1],
+ build(g){g.h(14,4,30,'*');g.h(12,4,14);g.h(9,16,28);g.h(6,4,13);g.h(3,14,27);
+  g.set(8,11,'*');g.set(12,11,'*');g.set(19,8,'*');g.set(23,8,'*');g.set(26,8,'*');g.set(7,5,'*');g.set(10,5,'*');},
+ keys:[[6,11],[10,11],[21,8],[5,5],[12,5],[20,2],[24,2]],
+ enemies:[{t:'walk',x0:9,x1:14,row:12,sp:2,style:'critter'},{t:'walk',x0:17,x1:22,row:9,sp:2,style:'robot'},
+  {t:'walk',x0:5,x1:9,row:6,sp:1.9,style:'critter'},{t:'vert',col:27,r0:4,r1:8,sp:2,style:'bat'}]},
+{name:'Magma Core',pal:'lava',air:105,start:{c:1,floor:15},portal:[29,10],
+ build(g){g.h(14,4,30,'^');g.h(12,4,7);g.h(12,9,12,'c');g.h(12,14,17);g.h(12,28,30);g.h(9,9,14);g.h(6,16,23);g.h(3,24,29);g.h(9,24,28);},
+ keys:[[6,11],[10,11],[16,11],[11,8],[19,5],[27,2],[26,8]],
+ enemies:[{t:'walk',x0:10,x1:14,row:9,sp:2,style:'critter'},{t:'walk',x0:17,x1:22,row:6,sp:2,style:'robot'},{t:'walk',x0:25,x1:28,row:9,sp:1.8,style:'critter'},{t:'vert',col:15,r0:7,r1:11,sp:2.4,style:'saw'}]},
+{name:'The Final Descent',pal:'void',air:115,start:{c:1,floor:15},portal:[6,1],
+ build(g){g.h(14,5,30,'^');g.h(12,5,8);g.h(12,11,15,'>');g.h(12,18,21);g.h(9,23,29,'<');g.h(6,14,21);g.h(3,6,12);},
+ keys:[[6,11],[13,11],[19,11],[26,8],[16,5],[20,5],[9,2],[11,2]],
+ enemies:[{t:'vert',col:9,r0:8,r1:12,sp:2.4,style:'saw'},{t:'vert',col:16,r0:8,r1:12,sp:2.4,style:'saw',ph:.5},{t:'vert',col:25,r0:4,r1:9,sp:2.2,style:'saw'},
+  {t:'vert',col:18,r0:7,r1:11,sp:2,style:'bat'},{t:'walk',x0:24,x1:28,row:9,sp:2,style:'robot'},{t:'walk',x0:15,x1:20,row:6,sp:2,style:'critter'}]}
+);
 LEVEL_DEFS.forEach(d=>{
  const g=[...Array(ROWS)].map(()=>Array(COLS).fill(' '));
  const api={h(r,c0,c1,ch='='){for(let c=c0;c<=c1;c++)g[r][c]=ch},set(c,r,ch){g[r][c]=ch},v(c,r0,r1,ch='#'){for(let r=r0;r<=r1;r++)g[r][c]=ch}};
@@ -68,7 +99,8 @@ LEVEL_DEFS.forEach(d=>{
 
 /* ---------- state ---------- */
 let state='title',lvl=null,p=null,li=0,score=0,lives=3,air=100,fade=1,t=0,dieT=0,shake=0,stateT=0;
-let hi=0;try{hi=+localStorage.getItem('mm_hi')||0}catch(e){}
+let hardcore=false,hiN=0,hiH=0,hi=0;try{hiN=+localStorage.getItem('mm_hi')||0;hiH=+localStorage.getItem('mm_hi_hc')||0}catch(e){}
+const numLevels=()=>hardcore?LEVEL_DEFS.length:5;
 let crt=true,musicOn=true,sfxOn=true,nextLife=5000;
 const parts=[],motes=[];
 const hasSolid=ch=>'#=c><'.includes(ch);
@@ -93,19 +125,19 @@ function buildBG(pal,seed){
 const STYLE_COL={critter:'#ff5fa2',robot:'#ff6a4d',bat:'#b57bff',saw:'#dfe6ff'};
 function mkEnemy(d){
  if(d.t==='walk'){const w=30,h=46,xmin=d.x0*T,xmax=d.x1*T-w;
-  return{t:'walk',w,h,x:xmin+(xmax-xmin)*(d.ph||0),y:d.row*T-h,xmin,xmax,dir:1,sp:d.sp,style:d.style,a:0,col:STYLE_COL[d.style]};}
+  return{t:'walk',w,h,x:xmin+(xmax-xmin)*(d.ph||0),y:d.row*T-h,xmin,xmax,dir:1,sp:d.sp*(hardcore?1.2:1),style:d.style,a:0,col:STYLE_COL[d.style]};}
  const s=30,ymin=d.r0*T,ymax=d.r1*T-s;
- return{t:'vert',w:s,h:s,x:d.col*T+1,y:ymin+(ymax-ymin)*(d.ph||0),ymin,ymax,dir:1,sp:d.sp,style:d.style,a:0,col:STYLE_COL[d.style]};
+ return{t:'vert',w:s,h:s,x:d.col*T+1,y:ymin+(ymax-ymin)*(d.ph||0),ymin,ymax,dir:1,sp:d.sp*(hardcore?1.2:1),style:d.style,a:0,col:STYLE_COL[d.style]};
 }
 function loadLevel(i){
  const d=LEVEL_DEFS[i];
  lvl={idx:i,name:d.name,pal:d.pal,grid:d.grid.map(r=>r.slice()),keys:d.keys.map(k=>({c:k[0],r:k[1],got:false})),
-  enemies:d.enemies.map(mkEnemy),portal:{c:d.portal[0],r:d.portal[1]},crumble:{},airSecs:d.air,bg:buildBG(d.pal,i*977+13)};
+  enemies:d.enemies.map(mkEnemy),portal:{c:d.portal[0],r:d.portal[1]},crumble:{},airSecs:d.air*(hardcore?.9:1),bg:buildBG(d.pal,i*977+13)};
  p={x:d.start.c*T+(T-PW)/2,y:d.start.floor*T-PH,vx:0,vy:0,on:true,face:1,coyote:0,jbuf:0,takeoff:d.start.floor*T,wp:0,jumped:false};
  air=100;fade=1;parts.length=0;mStep=0;mBar=0;
  motes.length=0;for(let k=0;k<40;k++)motes.push({x:Math.random()*CW,y:Math.random()*CAVE_H,s:Math.random()*.4+.1,a:Math.random()*6});
 }
-function startGame(){score=0;lives=3;li=0;nextLife=5000;loadLevel(0);state='play';initAudio();}
+function startGame(hc){hardcore=!!hc;hi=hardcore?hiH:hiN;score=0;lives=hardcore?0:3;li=0;nextLife=5000;loadLevel(0);state='play';initAudio();}
 
 /* ---------- audio ---------- */
 let AC=null,master,musicG,nextNote=0,mi=0;
@@ -126,7 +158,12 @@ const THEMES=[
  {root:-10,sc:'dor',bpm:136,lead:'sawtooth',prog:[[0,3,6,4],[0,5,3,4]]},
  {root:-14,sc:'phr',bpm:112,lead:'square',prog:[[0,1,0,6],[0,3,1,6]]},
  {root:-9,sc:'lyd',bpm:128,lead:'triangle',prog:[[0,4,5,3],[0,1,4,3]]},
- {root:-8,sc:'harm',bpm:146,lead:'sawtooth',prog:[[0,5,6,4],[0,3,4,5]]}
+ {root:-8,sc:'harm',bpm:146,lead:'sawtooth',prog:[[0,5,6,4],[0,3,4,5]]},
+ {root:-11,sc:'min',bpm:150,lead:'triangle',prog:[[0,3,6,4],[0,5,3,6]]},
+ {root:-15,sc:'phr',bpm:140,lead:'square',prog:[[0,1,6,1],[0,3,1,6]]},
+ {root:-10,sc:'dor',bpm:152,lead:'sawtooth',prog:[[0,6,3,4],[0,5,4,3]]},
+ {root:-13,sc:'harm',bpm:158,lead:'square',prog:[[0,1,5,4],[0,6,4,5]]},
+ {root:-9,sc:'phr',bpm:166,lead:'sawtooth',prog:[[0,1,0,6],[0,5,1,6]]}
 ];
 let mStep=0,mBar=0,mTitle=0,noiseBuf=null,curBar=null;
 function degNote(sc,d){return sc[((d%7)+7)%7]+12*Math.floor(d/7)}
@@ -216,7 +253,7 @@ cv.addEventListener('pointerdown',e=>{
  if(e.pointerType==='mouse')return;
  touchMode=true;e.preventDefault();
  const q=canvasPos(e);tpts.set(e.pointerId,q);
- if(state==='title')startGame();
+ if(state==='title')startGame(q.x>CW/2);
  else if((state==='gameover'||state==='win')&&stateT>60)state='title';
  else if(hit(TB.p,q)&&(state==='play'||state==='paused'))state=state==='play'?'paused':'play';
  else if(state==='paused')state='play';
@@ -235,8 +272,9 @@ function onPress(code){
  if(code==='KeyM'){musicOn=!musicOn;sfxOn=musicOn;if(musicG)musicG.gain.value=musicOn?1:0;}
  if(code==='KeyC')crt=!crt;
  if(code==='KeyP'&&(state==='play'||state==='paused'))state=state==='play'?'paused':'play';
+ if(code==='KeyH'&&state==='title')startGame(true);
  if(code==='Enter'||code==='Space'){
-  if(state==='title')startGame();
+  if(state==='title')startGame(false);
   else if((state==='gameover'||state==='win')&&stateT>60)state='title';
  }
  if(DEV&&code==='KeyN'&&state==='play')completeLevel();
@@ -247,7 +285,7 @@ function input(){
  const g=pads();let l=down.ArrowLeft||down.KeyA,r=down.ArrowRight||down.KeyD,j=down.Space||down.ArrowUp||down.KeyW||down.KeyZ;
  if(g){if(g.axes[0]<-.4||(g.buttons[14]&&g.buttons[14].pressed))l=true;if(g.axes[0]>.4||(g.buttons[15]&&g.buttons[15].pressed))r=true;
   if(g.buttons[0]&&g.buttons[0].pressed)j=true;
-  const s=g.buttons[9]&&g.buttons[9].pressed;if(s&&!padStartPrev&&state==='title')startGame();padStartPrev=!!s;}
+  const s=g.buttons[9]&&g.buttons[9].pressed;if(s&&!padStartPrev&&state==='title')startGame(false);padStartPrev=!!s;}
  if(touchMode){const s=touchState();l=l||s.l;r=r||s.r;j=j||s.j;}
  return{ax:(r?1:0)-(l?1:0),jump:!!j};
 }
@@ -329,8 +367,8 @@ function updatePlay(){
  if(lvl.open){const px=lvl.portal.c*T,py=lvl.portal.r*T;
   if(p.x+PW/2>px&&p.x+PW/2<px+2*T&&p.y+PH/2>py&&p.y+PH/2<py+2*T)completeLevel();}
 }
-function addScore(n){score+=n;if(score>hi){hi=score;try{localStorage.setItem('mm_hi',hi)}catch(e){}}
- while(score>=nextLife){lives++;nextLife+=5000;sfx('win');}}
+function addScore(n){score+=n;if(score>hi){hi=score;if(hardcore)hiH=hi;else hiN=hi;try{localStorage.setItem(hardcore?'mm_hi_hc':'mm_hi',hi)}catch(e){}}
+ while(!hardcore&&score>=nextLife){lives++;nextLife+=5000;sfx('win');}}
 
 function update(){
  t++;stateT++;
@@ -342,7 +380,7 @@ function update(){
   if(lives<0){state='gameover';stateT=0;}else{loadLevel(li);state='play';}}}
  else if(state==='clear'){
   if(air>0){const d=Math.min(air,1.2);air-=d;addScore(Math.round(d*10));if(t%3===0)sfx('tick');}
-  else if(stateT>40){li++;if(li>=LEVEL_DEFS.length){state='win';stateT=0;}else{loadLevel(li);state='play';}}}
+  else if(stateT>40){li++;if(li>=numLevels()){state='win';stateT=0;}else{loadLevel(li);state='play';}}}
 }
 
 /* ---------- drawing ---------- */
@@ -475,7 +513,7 @@ function drawHUD(){
  txt(`KEYS ${got}/${lvl.keys.length}`,24,612,22,'#ffd23c');
  txt('HIGH '+pad(hi),250,612,22,'#7df9ff');
  txt('SCORE '+pad(score),540,612,22,'#fff');
- for(let i=0;i<Math.max(0,lives);i++){const x=860+i*34;ctx.fillStyle='#ffd23c';ctx.fillRect(x,598,18,6);
+ if(hardcore)txt('HARDCORE',860,612,22,'#ff4d4d');else for(let i=0;i<Math.max(0,lives);i++){const x=860+i*34;ctx.fillStyle='#ffd23c';ctx.fillRect(x,598,18,6);
   ctx.fillStyle='#ffd1a6';ctx.fillRect(x+2,604,14,9);ctx.fillStyle='#f2f4ff';ctx.fillRect(x+1,613,16,8);}
 }
 function overlay(title,sub,col,line2){
@@ -490,8 +528,9 @@ function drawTitle(){
  txt('Collect every key, then reach the glowing portal before your air runs out.',CW/2,270,20,'#dde','center');
  const lines=['LEFT / RIGHT or A / D   Move','SPACE / UP / W           Jump','P Pause   M Music   C CRT filter'];
  lines.forEach((s,i)=>txt(s,CW/2,330+i*34,22,'#aab','center'));
- if(Math.floor(t/30)%2)txt(touchMode?'TAP TO START':'PRESS ENTER OR SPACE TO START',CW/2,470,32,'#fff','center','#fff');
- txt('HIGH '+pad(hi),CW/2,520,22,'#7df9ff','center');
+ if(Math.floor(t/30)%2){txt(touchMode?'TAP LEFT: NORMAL':'ENTER: NORMAL',CW/2-230,470,28,'#fff','center','#fff');txt(touchMode?'TAP RIGHT: HARDCORE':'H: HARDCORE',CW/2+230,470,28,'#ff4d4d','center','#ff4d4d');}
+ txt('3 lives, 5 caverns',CW/2-230,505,16,'#aab','center');txt('1 life, faster foes, 10 caverns',CW/2+230,505,16,'#aab','center');
+ txt('HIGH '+pad(hiN),CW/2-230,540,20,'#7df9ff','center');txt('HIGH '+pad(hiH),CW/2+230,540,20,'#ff9a9a','center');
  txt('Fan tribute to the 1983 ZX Spectrum classic by Matthew Smith. All caverns and art are original.',CW/2,590,16,'#778','center');
  const wx=((t*2)%(CW+80))-40;ctx.save();ctx.translate(0,0);drawWilly(wx,545-PH+PH,1,t*.28,false);ctx.restore();
  ctx.fillStyle='#8a4b2a';ctx.fillRect(0,607,CW,6);

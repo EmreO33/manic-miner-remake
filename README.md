@@ -10,4 +10,6 @@ Caverns, art and code are original.
 - P pause, M sound, C scanline filter
 - Touch: on-screen buttons appear on first touch
 
+Hardcore mode (H on the title screen, or tap the right side): one life, faster enemies, less air, and 5 extra harder caverns.
+
 Add `#dev` to the URL and press N to skip a level.
