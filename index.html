@@ -150,7 +150,7 @@ addEventListener('keydown',e=>{
 addEventListener('keyup',e=>{down[e.code]=false});
 /* ---------- touch controls ---------- */
 let touchMode=false;const tpts=new Map();
-const TB={l:{x:105,y:430,r:68},r:{x:265,y:430,r:68},j:{x:919,y:430,r:78},p:{x:976,y:44,r:30}};
+const TB={l:{x:64,y:452,r:40},r:{x:154,y:452,r:40},j:{x:962,y:452,r:46},p:{x:990,y:34,r:20}};
 function canvasPos(e){const b=cv.getBoundingClientRect();return{x:(e.clientX-b.left)*CW/b.width,y:(e.clientY-b.top)*CH/b.height}}
 function hit(b,q){return Math.hypot(q.x-b.x,q.y-b.y)<=b.r*1.25}
 function touchState(){const s={l:false,r:false,j:false};
@@ -171,7 +171,7 @@ for(const ev of['pointerup','pointercancel','pointerleave'])cv.addEventListener(
 document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 function drawTouch(){
  const s=touchState();ctx.save();ctx.lineWidth=3;
- const btn=(b,on,label)=>{ctx.globalAlpha=on?.55:.28;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,7);ctx.fill();
+ const btn=(b,on,label)=>{ctx.globalAlpha=on?.5:.2;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,7);ctx.fill();
   ctx.globalAlpha=.8;ctx.strokeStyle='#fff';ctx.stroke();ctx.globalAlpha=.9;txt(label,b.x,b.y+2,b.r*.8,'#10101a','center');};
  btn(TB.l,s.l,'<');btn(TB.r,s.r,'>');btn(TB.j,s.j,'JUMP'.length?'^':'');
  btn(TB.p,false,'II');ctx.restore();
