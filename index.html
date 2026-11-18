@@ -334,8 +334,7 @@ function updatePlay(){
  moveX(p.vx+extra);
  moveY(p.vy);
  if(was&&!p.on&&!jumped){p.vx=0;p.takeoff=p.y+PH-p.vy;}
- if(!was&&p.on){const fall=p.y+PH-p.takeoff;if(fall>FALL_MAX){die();return;}}
- if(p.on&&(was||true)){p.takeoff=p.y+PH;}
+  if(p.on&&(was||true)){p.takeoff=p.y+PH;}
  if(p.on){
   const fr=Math.round((p.y+PH)/T),c0=Math.floor(p.x/T),c1=Math.floor((p.x+PW-.01)/T);
   for(let c=c0;c<=c1;c++)if(fr<ROWS&&lvl.grid[fr][c]==='c'){const k=c+','+fr;if(lvl.crumble[k]===undefined){lvl.crumble[k]=0;sfx('crumble');}}
