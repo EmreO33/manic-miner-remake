@@ -7,7 +7,7 @@ Caverns, art and code are original.
 ## Controls
 - Move: Left/Right or A/D
 - Jump: Space, Up or W
-- P pause, M sound, C scanline filter
+- P pause, M sound, C scanline filter, R restart the cavern (costs a life)
 - Touch: on-screen buttons appear on first touch
 
 Hardcore mode (H on the title screen, or tap the right side): one life, faster enemies, less air, and 5 extra harder caverns.
